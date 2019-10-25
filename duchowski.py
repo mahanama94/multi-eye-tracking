@@ -1,5 +1,5 @@
 import cv2
-
+import json
 
 def run():
     face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
@@ -19,34 +19,34 @@ def run():
         cv2.imwrite('img.jpg', img)
         cv2.waitKey()
 
-    vidcap = cv2.VideoCapture('testvideo.mp4')
-
-    frame_width = int(vidcap.get(3))
-    frame_height = int(vidcap.get(4))
-
-    out = cv2.VideoWriter('out.mp4', cv2.VideoWriter_fourcc(*'MP4V'), 24, (frame_width, frame_height))
-    i = 0
-    while vidcap.isOpened():
-        success, img = vidcap.read()
-        if success:
-            if i % 5 == 0:
-                gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-                faces = face_cascade.detectMultiScale(gray)
-                # eyes = eye_cascade.detectMultiScale(gray)
-                test(img, faces)
-            # out.write(img)
-                print(i)
-            i = i + 1
-            # if i == 500:
-            #     break
-            cv2.imshow("img", img)
-            if cv2.waitKey(1) & 0xFF == ord('q'):                     # exit if Escape is hit
-                break
-        else:
-            break
-
-    vidcap.release()
-    out.release()
+    # vidcap = cv2.VideoCapture('testvideo.mp4')
+    #
+    # frame_width = int(vidcap.get(3))
+    # frame_height = int(vidcap.get(4))
+    #
+    # out = cv2.VideoWriter('out.mp4', cv2.VideoWriter_fourcc(*'MP4V'), 24, (frame_width, frame_height))
+    # i = 0
+    # while vidcap.isOpened():
+    #     success, img = vidcap.read()
+    #     if success:
+    #         if i % 5 == 0:
+    #             gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    #             faces = face_cascade.detectMultiScale(gray)
+    #             # eyes = eye_cascade.detectMultiScale(gray)
+    #             test(img, faces)
+    #         # out.write(img)
+    #             print(i)
+    #         i = i + 1
+    #         # if i == 500:
+    #         #     break
+    #         cv2.imshow("img", img)
+    #         if cv2.waitKey(1) & 0xFF == ord('q'):                     # exit if Escape is hit
+    #             break
+    #     else:
+    #         break
+    #
+    # vidcap.release()
+    # out.release()
 
     cv2.destroyAllWindows()
 
@@ -64,7 +64,17 @@ def test(img, faces):
         # if len(eyes) == 0:
         #     continue
 
-        cv2.imwrite("faces\\" + str(i) + "-he.jpg", gray)
+        # cv2.imwrite("output\\faces\\" + str(i) + ".jpg", gray)
+        # face_info = {
+        #     "x": float(x),
+        #     "y": float(y),
+        #     "w": float(w),
+        #     "h": float(h)
+        # }
+        # file = open("output\\faces\\" + str(i) + ".json", "w")
+        # print(type(face_info))
+        # json.dump(face_info, file)
+        # file.close()
         cv2.waitKey()
         # face
         cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2)
