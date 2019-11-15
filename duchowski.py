@@ -5,11 +5,12 @@ import numpy as np
 def run():
     face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
     eye_cascade = cv2.CascadeClassifier('haarcascade_eye.xml')
-    images = ["test.jpg"
+    images = ["test1.jpg"
               # , "img2.JPG"
               ]
     for image in images:
         img = cv2.imread(image)
+        img = cv2.resize(img, None, fx=0.1, fy=0.1)
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         newGray = gray[:]
         cv2.equalizeHist(newGray, gray)
