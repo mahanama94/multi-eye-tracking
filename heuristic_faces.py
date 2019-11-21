@@ -1,4 +1,5 @@
 import cv2
+import numpy as np
 
 
 class HeuristicFaceClassifier:
@@ -18,17 +19,22 @@ class HeuristicFaceClassifier:
         for face in faces:
             (x, y, w, h) = face
             crop = gray_image[y:y + h, x: x + w]
-            if self._heuristic_test(crop):
-                valid_faces.append(face)
+            heuristic_result = self._heuristic_test(crop)
 
+            if heuristic_result['result']:
+                valid_faces.append({'face': face, 'eyes': heuristic_result['eyes']})
         return valid_faces
 
     def _heuristic_test(self, face_image):
         (w, h) = face_image.shape
         eyes = self.eye_cascade.detectMultiScale(face_image)
+        return_data = {'result': True, 'eyes': []}
 
         if len(eyes) == 2:
-            return True
+            for eye in eyes:
+                (x, y, w, h) = eye
+                pupil = self._heuristic_pupil(face_image[y:y + h, x: x + w])
+                return_data['eyes'].append({'eye': eye, 'pupil': pupil})
             # (e1x, e1y, e1w, e1h) = eyes[0]
             # (e2x, e2y, e2w, e2h) = eyes[1]
             #
@@ -59,6 +65,16 @@ class HeuristicFaceClassifier:
             # return True
         elif len(eyes) == 1:
             # Try to detect the other eye in the face image
-            return False
+            return_data['result'] = False
         else:
-            return False
+            return_data['result'] = False
+        return return_data
+
+    def _heuristic_pupil(self, eye_image):
+
+        eye_image = cv2.GaussianBlur(eye_image, (7, 7), 0)
+        (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(~ eye_image)
+        # cv2.circle(eye_image, maxLoc, 7, (255, 0, 0), 2)
+        # cv2.imshow("Eye", eye_image)
+        # cv2.waitKey()
+        return np.array(list(maxLoc) + [7])

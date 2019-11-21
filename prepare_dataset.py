@@ -13,6 +13,8 @@ def run():
     dot_position_file = open(output_data_path + 'dot_position.dat', 'a')
 
     count = 0
+    eye_w = []
+    eye_h = []
     folders = os.listdir(data_path)
     for folder in folders:
         current_folder = data_path + "\\" + folder
@@ -21,10 +23,10 @@ def run():
         camera_h_positions = []
         camera_v_positions = []
 
+
+
         for image in images:
             if image != 'Thumbs.db' and image != '.picasa.ini' and image != '.DS_Store':
-
-                print(image)
 
                 img = cv2.imread(current_folder + "\\" + image)
                 img = cv2.resize(img, None, fx=0.1, fy=0.1)
@@ -32,28 +34,38 @@ def run():
 
                 heuristic_faces = heuristic_clf.detect_faces(img)
 
-                if len(heuristic_faces) != 0:
-                    (x, y, w, h) = heuristic_faces[0]
+                for face in heuristic_faces:
+
+                    (x, y, w, h) = face["face"]
                     crop = img_gray[y:y + h, x: x + w]
                     #
+                    for eye in face["eyes"]:
+                        (x, y, w, h) = eye['eye']
+                        eye_h.append(h)
+                        eye_w.append(w)
+                        cv2.rectangle(crop, (x, y), (x + w, y + h), (255, 255, 0), 2)
+
                     # cv2.imshow('crop', crop)
                     # cv2.waitKey()
-
-                    image_data = image.split(".")[0].split("_")
-                    subject = int(image_data[0])
-                    dot_position = int(image_data[2].replace("P", ""))
-                    camera_v_position = int(image_data[3].replace("V", ""))
-                    camera_h_position = int(image_data[4].replace("H", ""))
-
-                    cv2.imwrite(output_image_path + str(count) + '.jpg', crop)
-                    dot_position_file.write(str(dot_position) + "\n")
-
+                    # cv2.waitKey()
+                    #
+                    # image_data = image.split(".")[0].split("_")
+                    # subject = int(image_data[0])
+                    # dot_position = int(image_data[2].replace("P", ""))
+                    # camera_v_position = int(image_data[3].replace("V", ""))
+                    # camera_h_position = int(image_data[4].replace("H", ""))
+                    #
+                    # cv2.imwrite(output_image_path + str(count) + '.jpg', crop)
+                    # dot_position_file.write(str(dot_position) + "\n")
+                    #
+                    print(count)
                     count = count + 1
-
 
                 # print(image_data)
 
     dot_position_file.close()
+    print(min(eye_h))
+    print(min(eye_w))
 
 
 run()
