@@ -20,6 +20,7 @@ class HeuristicFaceClassifier:
             (x, y, w, h) = face
             crop = gray_image[y:y + h, x: x + w]
             heuristic_result = self._heuristic_test(crop)
+            heuristic_result['eyes'].sort(key=lambda x: x['eye'][0])
 
             if heuristic_result['result']:
                 valid_faces.append({'face': face, 'eyes': heuristic_result['eyes']})
@@ -71,10 +72,10 @@ class HeuristicFaceClassifier:
         return return_data
 
     def _heuristic_pupil(self, eye_image):
-
+        # gray = eye_image
         eye_image = cv2.GaussianBlur(eye_image, (7, 7), 0)
         (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(~ eye_image)
-        # cv2.circle(eye_image, maxLoc, 7, (255, 0, 0), 2)
-        # cv2.imshow("Eye", eye_image)
+        # cv2.circle(gray, maxLoc, 7, (255, 0, 0), 2)
+        # cv2.imshow("Eye", gray)
         # cv2.waitKey()
         return np.array(list(maxLoc) + [7])

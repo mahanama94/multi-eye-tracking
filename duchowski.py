@@ -10,7 +10,7 @@ def run():
               ]
     for image in images:
         img = cv2.imread(image)
-        img = cv2.resize(img, None, fx=0.1, fy=0.1)
+        # img = cv2.resize(img, None, fx=0.1, fy=0.1)
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         newGray = gray[:]
         cv2.equalizeHist(newGray, gray)
@@ -79,22 +79,25 @@ def test(img, faces):
         # file.close()
         cv2.waitKey()
 
-        # eye lines - vertical
-        # cv2.line(img, (x + int(w / 5.0), y), (x + int(w / 5.0), y + h), (0, 255, 0), 2)
-        # cv2.line(img, (x + int(4 * w / 5.0), y), (x + int(4 * w / 5.0), y + h), (0, 255, 0), 2)
+        cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2)
 
-        # eye lines - horizontal
-        # cv2.line(img, (x, y + int(h / 3.0)), (x + w, y + int(h / 3.0)), (0, 255, 0), 2)
-
-        # nose line - vertical
-        # cv2.line(img, (x + int(w / 2.0), y), (x + int(w / 2.0), y + h), (0, 255, 0), 1)
-        # cv2.line(img, (x + int(2 * w / 5.0), y), (x + int(2 * w / 5.0), y + h), (0, 255, 0), 1)
-        # cv2.line(img, (x + int(3 * w / 5.0), y), (x + int(3 * w / 5.0), y + h), (0, 255, 0), 1)
-        eyes = check_eyes_in_face((x, y, w, h), eyes)
-        if len(eyes) != 0:
-            cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2)
-            for (ex, ey, ew, eh) in eyes:
-                cv2.rectangle(img, (x + ex, y + ey), (x + ex + ew, y + ey + eh), (255, 255, 0), 2)
+        # eyes = check_eyes_in_face((x, y, w, h), eyes)
+        # if len(eyes) != 0:
+        #     cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2)
+        #     for (ex, ey, ew, eh) in eyes:
+        #         cv2.rectangle(img, (x + ex, y + ey), (x + ex + ew, y + ey + eh), (255, 255, 0), 2)
+        #
+        #     # eye lines - vertical
+        #     cv2.line(img, (x + int(w / 5.0), y), (x + int(w / 5.0), y + h), (0, 255, 0), 2)
+        #     cv2.line(img, (x + int(4 * w / 5.0), y), (x + int(4 * w / 5.0), y + h), (0, 255, 0), 2)
+        #
+        #     # eye lines - horizontal
+        #     cv2.line(img, (x, y + int(h / 3.0)), (x + w, y + int(h / 3.0)), (0, 255, 0), 2)
+        #
+        #     # nose line - vertical
+        #     cv2.line(img, (x + int(w / 2.0), y), (x + int(w / 2.0), y + h), (0, 255, 0), 1)
+        #     # cv2.line(img, (x + int(2 * w / 5.0), y), (x + int(2 * w / 5.0), y + h), (0, 255, 0), 1)
+        #     # cv2.line(img, (x + int(3 * w / 5.0), y), (x + int(3 * w / 5.0), y + h), (0, 255, 0), 1)
 
     # for (x, y, w, h) in eyes:
     #     cv2.rectangle(img, (x, y), (x+w, y+h), (0, 255, 0), 2)

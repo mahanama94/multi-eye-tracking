@@ -45,8 +45,14 @@ def run():
                         eye_w.append(w)
                         cv2.rectangle(crop, (x, y), (x + w, y + h), (255, 255, 0), 2)
 
-                    # cv2.imshow('crop', crop)
-                    # cv2.waitKey()
+                        pupil = eye["pupil"]
+                        cv2.circle(crop, (x + pupil[0], y + pupil[1]), 7, (255, 0, 0), 2)
+
+                    cv2.imshow('crop', crop)
+                    cv2.imwrite('crop.jpg', crop)
+
+                    cv2.waitKey()
+                    break
                     # cv2.waitKey()
                     #
                     # image_data = image.split(".")[0].split("_")
