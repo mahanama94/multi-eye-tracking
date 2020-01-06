@@ -73,9 +73,16 @@ class HeuristicFaceClassifier:
 
     def _heuristic_pupil(self, eye_image):
         # gray = eye_image
+        eye_image = ~ eye_image
         eye_image = cv2.GaussianBlur(eye_image, (7, 7), 0)
-        (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(~ eye_image)
-        # cv2.circle(gray, maxLoc, 7, (255, 0, 0), 2)
+
+        # Gaussian Kernel Amplification ?
+        (w, h) = eye_image.shape
+        g = cv2.getGaussianKernel(w, 1)
+        eye_image = ((eye_image * g).T * g).T
+
+        (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(eye_image)
+        # cv2.circle(gray, minLoc, 7, (255, 0, 0), 2)
         # cv2.imshow("Eye", gray)
         # cv2.waitKey()
         return np.array(list(maxLoc) + [7])
