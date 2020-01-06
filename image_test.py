@@ -3,6 +3,8 @@ import cv2
 from heuristic_faces import HeuristicFaceClassifier
 import pickle
 import pandas as pd
+import sys
+
 
 cap = cv2.VideoCapture(0)
 clf = HeuristicFaceClassifier()
@@ -10,9 +12,10 @@ clf = HeuristicFaceClassifier()
 horizontal_model = pickle.load(open("horizontal_gaze.pkcls", "rb"))
 vertical_model = pickle.load(open("vertical_gaze.pkcls", "rb"))
 
-# Capture frame-by-frame
-frame = cv2.imread("test1.jpg")
-
+if len(sys.argv) >= 2:
+    frame = cv2.imread(sys.argv[1])
+else:
+    frame = cv2.imread("test.jpg")
 # Our operations on the frame come here
 gray = frame
 
@@ -41,11 +44,11 @@ for face in faces:
         'r_eye_py': face['eyes'][1]['pupil'][1]/face_size,
         'l_eye_py': face['eyes'][0]['pupil'][1]/face_size}, index=[0])
 
-    horizontal_prediction = horizontal_model.predict(dataframe)[0]
-    vertical_prediction = vertical_model.predict(dataframe)[0]
-    label = "Direction: " + str(horizontal_prediction) \
-            # + " V: " + str(vertical_prediction)
-    cv2.putText(gray, label, (x, y), thickness=2, fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=0.5, color=(255, 0, 0))
+    horizontal_prediction = round(horizontal_model.predict(dataframe)[0], 1)
+    vertical_prediction = round(vertical_model.predict(dataframe)[0], 1)
+    label = "H: " + str(horizontal_prediction) \
+            + " V: " + str(vertical_prediction)
+    cv2.putText(gray, label, (x, y), thickness=2, fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=0.5, color=(255, 255, 255))
 
 cv2.imshow('frame',gray)
 # cv2.imwrite("sample-class-2.jpg", gray)
@@ -54,5 +57,3 @@ cv2.waitKey()
 # When everything done, release the capture
 cap.release()
 cv2.destroyAllWindows()
-
-a = input("Test")

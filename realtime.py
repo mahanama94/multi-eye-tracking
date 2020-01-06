@@ -6,9 +6,9 @@ import pandas as pd
 
 cap = cv2.VideoCapture(0)
 clf = HeuristicFaceClassifier()
-f = open("horizontal_gaze.pkcls", "rb")
+horizontal_model = pickle.load(open("horizontal_gaze.pkcls", "rb"))
+vertical_model = pickle.load(open("vertical_gaze.pkcls", "rb"))
 
-model = pickle.load(f)
 while(True):
     # Capture frame-by-frame
     ret, frame = cap.read()
@@ -41,8 +41,12 @@ while(True):
             'r_eye_py': face['eyes'][1]['pupil'][1]/face_size,
             'l_eye_py': face['eyes'][0]['pupil'][1]/face_size}, index=[0])
 
-        prediction = model.predict(dataframe)[0]
-        cv2.putText(gray, "Direction : " + str(prediction), (x, y), thickness=2, fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(255, 0, 0))
+        horizontal_prediction = round(horizontal_model.predict(dataframe)[0], 1)
+        vertical_prediction = round(vertical_model.predict(dataframe)[0], 1)
+        label = "H: " + str(horizontal_prediction) \
+                + " V: " + str(vertical_prediction)
+        cv2.putText(gray, label, (x, y), thickness=2, fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=0.5,
+                    color=(255, 255, 255))
     cv2.imshow('frame',gray)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
